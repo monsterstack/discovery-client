@@ -36,11 +36,24 @@ class DiscoveryClient {
   query(me, types, resultHandler) {
     this.queryHandler = resultHandler;
     console.log(`Performing query for types ${types}`);
+    this.sendInitReq(me, types);
+    this.sendInitReq(types);
+
+    this.listenForChanges(resultHandler);
+
+  }
+
+  sendInitReq(me, types) {
     console.log('Init');
-    this.socket.emit('services:init', { descriptor: me, types: types });
+    this.socket.emit('services:init', { descriptor: me, types: types});
+  }
+
+  sendSubscribeReq(types) {
     console.log('Subscribe');
     this.socket.emit('services:subscribe', { types: types });
+  }
 
+  listenForChanges(resultHandler) {
     let handler;
     if(resultHandler) {
       handler = resultHandler;
@@ -54,9 +67,10 @@ class DiscoveryClient {
     } else {
       console.log("*********** Missing handler **************");
     }
-
   }
 }
+
+
 
 /**
  * Connect to Discovery Service
