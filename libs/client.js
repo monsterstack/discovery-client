@@ -37,7 +37,7 @@ class DiscoveryClient {
     this.queryHandler = resultHandler;
     console.log(`Performing query for types ${types}`);
     this.sendInitReq(me, types);
-    this.sendInitReq(types);
+    this.sendSubcribeReq(types);
 
     this.listenForChanges(resultHandler);
 
