@@ -81,7 +81,7 @@ class DiscoveryClient {
  */
 const connect = (options, callback) => {
     let host = options.addr || 'http://localhost:7616';
-    let socket = socketIOClient(host);
+    let socket = socketIOClient(host, { transports: ["websocket"] } );
     let client = new DiscoveryClient(socket);
 
     client.onDisconnect(() => {
