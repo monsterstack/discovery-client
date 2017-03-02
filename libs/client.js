@@ -53,6 +53,10 @@ class DiscoveryClient {
     this.socket.emit('services:subscribe', { types: types });
   }
 
+  sendResponseTimeMetric(metric) {
+    this.socket.emit('services:metric', metric);
+  }
+
   listenForChanges(resultHandler) {
     let handler;
     if(resultHandler) {
