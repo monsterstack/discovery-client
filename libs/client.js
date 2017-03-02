@@ -54,6 +54,7 @@ class DiscoveryClient {
   }
 
   sendResponseTimeMetric(metric) {
+    console.log(metric);
     console.log(`Metric ${metric.type} - ${metric.value}`);
     this.socket.emit('services:metric', metric);
   }
