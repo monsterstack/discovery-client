@@ -40,7 +40,6 @@ class DiscoveryClient {
     this.sendSubscribeReq(types);
 
     this.listenForChanges(resultHandler);
-
   }
 
   sendInitReq(me, types) {
@@ -57,6 +56,11 @@ class DiscoveryClient {
     console.log(metric);
     console.log(`Metric ${metric.type} - ${metric.value}`);
     this.socket.emit('services:metrics', metric);
+  }
+
+  sendOfflineStatus(serviceId) {
+    console.log(`Marking Service ${serviceId} as Offline`);
+    this.socket.emit('services:offline', { serviceId: serviceId});
   }
 
   listenForChanges(resultHandler) {
