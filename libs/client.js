@@ -79,7 +79,8 @@ class DiscoveryClient {
       this.socket.on('service.init', handler.init);
 
       handler.forceSync = () => {
-        this.socket.emit('services:sync', { query: { types: queryTypes} });
+        if(queryTypes && queryTypes.length > 0);
+          this.socket.emit('services:sync', { query: { types: queryTypes} });
       };
 
       this.socket.on('force_sync', handler.forceSync);
