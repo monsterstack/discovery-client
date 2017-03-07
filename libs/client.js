@@ -27,6 +27,9 @@ class DiscoveryClient {
       this.socket.removeListener('service.removed', this.queryHandler.removed);
       this.socket.removeListener('service.updated', this.queryHandler.updated);
       this.socket.removeListener('service.init', this.queryHandler.init);
+      this.socket.removeListener('services:sync', this.queryHandler.sync);
+
+      this.socket.removeListener('force_sync', this.queryHandler.forceSync);
     }
   }
 
@@ -39,7 +42,7 @@ class DiscoveryClient {
     this.sendInitReq(me, types);
     this.sendSubscribeReq(types);
 
-    this.listenForChanges(resultHandler);
+    this.listenForChanges(resultHandler, types);
   }
 
   sendInitReq(me, types) {
@@ -63,7 +66,7 @@ class DiscoveryClient {
     this.socket.emit('services:offline', { serviceId: serviceId});
   }
 
-  listenForChanges(resultHandler) {
+  listenForChanges(resultHandler, queryTypes) {
     let handler;
     if(resultHandler) {
       handler = resultHandler;
@@ -74,6 +77,15 @@ class DiscoveryClient {
       this.socket.on('service.removed', handler.removed);
       this.socket.on('service.updated', handler.updated);
       this.socket.on('service.init', handler.init);
+
+      handler.forceSync = () => {
+        this.socket.emit('services:sync', { types: queryTypes});
+      };
+      
+      this.socket.on('force_sync', handler.forceSync);
+
+      // Support Sync of Routing table
+      this.socket.on('services:sync', handler.sync);
     } else {
       console.log("*********** Missing handler **************");
     }
