@@ -79,9 +79,9 @@ class DiscoveryClient {
       this.socket.on('service.init', handler.init);
 
       handler.forceSync = () => {
-        this.socket.emit('services:sync', { types: queryTypes});
+        this.socket.emit('services:sync', { query: { types: queryTypes} });
       };
-      
+
       this.socket.on('force_sync', handler.forceSync);
 
       // Support Sync of Routing table
