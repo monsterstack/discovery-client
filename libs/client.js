@@ -47,23 +47,27 @@ class DiscoveryClient {
 
   sendInitReq(me, types) {
     console.log('Init');
-    this.socket.emit('services:init', { descriptor: me, types: types});
+    if (this.socket)
+      this.socket.emit('services:init', { descriptor: me, types: types});
   }
 
   sendSubscribeReq(types) {
     console.log('Subscribe');
-    this.socket.emit('services:subscribe', { types: types });
+    if (this.socket)
+      this.socket.emit('services:subscribe', { types: types });
   }
 
   sendResponseTimeMetric(metric) {
     console.log(metric);
     console.log(`Metric ${metric.type} - ${metric.value}`);
-    this.socket.emit('services:metrics', metric);
+    if (this.socket)
+      this.socket.emit('services:metrics', metric);
   }
 
   sendOfflineStatus(serviceId) {
     console.log(`Marking Service ${serviceId} as Offline`);
-    this.socket.emit('services:offline', { serviceId: serviceId});
+    if (this.socket)
+      this.socket.emit('services:offline', { serviceId: serviceId});
   }
 
   listenForChanges(resultHandler, queryTypes) {
