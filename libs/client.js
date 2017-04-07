@@ -1,7 +1,7 @@
 'use strict';
 
 const DEFAULT_ADDR = "http://localhost:7616";
-
+const debug = require('debug')('discovery-client');
 const socketIOClient = require('socket.io-client');
 /**
  * Discovery Client
@@ -38,7 +38,7 @@ class DiscoveryClient {
    */
   query(me, types, resultHandler) {
     this.queryHandler = resultHandler;
-    console.log(`Performing query for types ${types}`);
+    debug(`Performing query for types ${types}`);
     this.sendInitReq(me, types);
     this.sendSubscribeReq(types);
 
@@ -46,26 +46,26 @@ class DiscoveryClient {
   }
 
   sendInitReq(me, types) {
-    console.log('Init');
+    debug('Init');
     if (this.socket)
       this.socket.emit('services:init', { descriptor: me, types: types});
   }
 
   sendSubscribeReq(types) {
-    console.log('Subscribe');
+    debug('Subscribe');
     if (this.socket)
       this.socket.emit('services:subscribe', { types: types });
   }
 
   sendResponseTimeMetric(metric) {
-    console.log(metric);
-    console.log(`Metric ${metric.type} - ${metric.value}`);
+    debug(metric);
+    debug(`Metric ${metric.type} - ${metric.value}`);
     if (this.socket)
       this.socket.emit('services:metrics', metric);
   }
 
   sendOfflineStatus(serviceId) {
-    console.log(`Marking Service ${serviceId} as Offline`);
+    debug(`Marking Service ${serviceId} as Offline`);
     if (this.socket)
       this.socket.emit('services:offline', { serviceId: serviceId});
   }
@@ -76,7 +76,7 @@ class DiscoveryClient {
       handler = resultHandler;
 
       // Setup
-      console.log('Listening for changes');
+      debug('Listening for changes');
       this.socket.on('service.added', handler.added);
       this.socket.on('service.removed', handler.removed);
       this.socket.on('service.updated', handler.updated);
@@ -92,7 +92,7 @@ class DiscoveryClient {
       // Support Sync of Routing table
       this.socket.on('services:sync', handler.sync);
     } else {
-      console.log("*********** Missing handler **************");
+      console.error("*********** Missing handler **************");
     }
   }
 }
@@ -112,7 +112,7 @@ const connect = (options, callback) => {
     let client = new DiscoveryClient(socket);
 
     client.onDisconnect(() => {
-      console.log('Bye Bye Connection');
+      debug('Bye Bye Connection');
       client.clearHandlers();
     });
 
